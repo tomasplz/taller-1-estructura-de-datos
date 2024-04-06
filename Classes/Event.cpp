@@ -1,4 +1,6 @@
+#include "Asistente.h"
 #include "Event.h"
+
 Event::Event(string ubicacion, string tema, int duracion){this->ubicacion = ubicacion; this->tema = tema; this->duracion = duracion;}
 string Event::getUbicacion() {return ubicacion;}
 string Event::getTema() {return tema;}
@@ -12,10 +14,13 @@ void Event::mostrarInformacion() {
     cout << "Duración: " << duracion << endl;
 }
 
-void Event::agregarParticipante() {
-    Asistente asistente("Juan", "Pérez", 23);
-    asistentes.push_back(&asistente);
-    cout << "Participante " << asistente.getName() << " agregado." << endl;
+void Event::addAsistente(Asistente* asist) {
+    asistentes.push_back(asist);
+    cout << "Participante " << asist->getName() << " agregado." << endl;
+}
+
+vector<Asistente*> Event::getAsistentes() {
+    return asistentes;
 }
 
 void Event::eliminarParticipante(string nombre) {

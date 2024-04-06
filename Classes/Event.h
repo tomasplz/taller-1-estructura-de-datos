@@ -1,9 +1,9 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include "Asistente.h"
 using namespace std;
 
+class Asistente;
 class Event
 {
 private:
@@ -19,6 +19,7 @@ public:
     void setTema(string tema);
     void setDuracion(int duracion);
     void mostrarInformacion(); // = 0 hace que el método sea puramente virtual
-    void agregarParticipante();
+    void addAsistente(Asistente* asist);
+    vector<Asistente*> getAsistentes();
     void eliminarParticipante(string nombre);
 };

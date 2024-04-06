@@ -1,11 +1,14 @@
 #include "Sys.h"
+using namespace std;
 
 bool loadData();
 bool createNewEvent(Event*& event); // Define the type of the parameter "event"
 bool registryAssistant(Asistente* asist);
-bool consultAssistants();
+void consultAssistants();
 bool generateInforms();
 bool saveData();
+void EventsInfo(); // Define the function informacionEventos()
+void printOcupationList(); // Define the function listaOcupaciones()
 
 Sys::Sys(){};
 void Sys::ejecutar(){
@@ -58,22 +61,107 @@ void Sys::ejecutar(){
 };
 
 bool Sys::loadData(){
-    return true;
 }
 
-bool Sys::createNewEvent(Event*& event){
+bool Sys::createNewEvent(Event*& event){ //
+    int eventType;
+    cout << "Seleccione el tipo de evento:\n";
+    cout << "1) Concert\n2) Conference\n3) Seminario\n4) Taller" <<endl;
+    cin >> eventType;
+    cin.ignore();
+    EventFactory eventFactory;
+    event = eventFactory.createEvent(eventType);
+    if (event == nullptr) {
+        cout << "Error al crear el evento." << endl;
+        return false;
+    }
+
+    eventos.push_back(event);
+    EventsInfo();
     return true;
+}
+void Sys::EventsInfo(){
+    int cont = 0;
+    cout << "Lista de eventos:\n";
+    for (const auto& event : eventos) {
+        cont+=1;
+        cout << "EVENTO NUMERO " << (cont) << endl;
+        event->mostrarInformacion();
+    }
 }
 
-bool Sys::registryAssistant(Asistente* asist){
+void Sys::printOcupationList(){
+    cout << "Lista de ocupaciones:\n";
+    cout << "1) Estudiante\n2) Invitado Especial\n3) Profesional\n";
+}
+
+bool Sys::registryAssistant(Asistente* asist){ //
+    string nombre, rut, ocupacion, institucion;
+    int edad;
+    cin.ignore();
+    cout << "Ingrese el nombre del asistente: "; getline(cin, nombre);
+    cout << "Ingrese el rut del asistente: "; getline(cin, rut);
+    cout << "Ingrese la edad del asistente: "; cin >> edad;
+    cin.ignore();
+    printOcupationList();
+    cout << "Ingrese la ocupacion del asistente: "; getline(cin, ocupacion);
+    cout << "Ingrese la institucion del asistente: "; getline(cin, institucion);
+    AsistenteFactory asistenteFactory;
+    asist = asistenteFactory.createAsistente(nombre, rut, edad, ocupacion, institucion);
+    if (asist == nullptr) {
+        cout << "Error al crear el asistente." << endl;
+        return false;
+    }
+    int eventIndex = 0;
+    cout << "Ingrese el índice del evento al que desea agregar el asistente: ";
+    EventsInfo();
+    cin >> eventIndex;
+    eventIndex-=1;
+    cout << "Event index" << eventIndex << endl;
+    if (eventIndex >= 0 && eventIndex < eventos.size()) {
+        eventos[eventIndex]->addAsistente(asist);
+        asist->addEvent(eventos[eventIndex]);
+        asistentes.push_back(asist);
+        return true;
+    } else {
+        cout << "Índice de evento no válido. No se ha agregado el asistente al evento." << endl;
+        return false;
+    }
+}
+
+void Sys::consultAssistants(){
+    cout << "Lista de asistentes:\n";
+    cout << asistentes.size() << "es el tamano" << endl;
+    for (const auto& asistente : asistentes) {
+        asistente->showInformation();
+    }
+}
+
+bool Sys::generateInforms(){ //
     return true;
 }
-bool Sys::consultAssistants(){
-    return true;
-}
-bool Sys::generateInforms(){
-    return true;
-}
-bool Sys::saveData(){
+bool Sys::saveData(){ //
+    ofstream outputFile("data.txt");
+    if (!outputFile.is_open()) {
+        cout << "Error al abrir el archivo de datos." << endl;
+        return false;
+    }
+
+    for (const auto& event : eventos) {
+        outputFile << "Evento:" << event->getUbicacion() << endl;
+        outputFile << "Tipo:" << event->getTema() << endl;
+        outputFile << "Fecha:" << event->getDuracion() << endl;
+        for (const auto& asistente : event->getAsistentes()) {
+            outputFile << "Asistente" << endl;
+            outputFile << "Nombre: " << asistente->getName() << endl;
+            outputFile << "Rut:" << asistente->getRut() << endl;
+            outputFile << "Edad:" << asistente->getAge() << endl;
+            outputFile << "Ocupación:" << asistente->getOcupacion() << endl;
+            outputFile << "Institución:" << asistente->getInstitucion() << endl;
+        }
+        outputFile << endl;
+    }
+
+    outputFile.close();
     return true;
 }

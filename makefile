@@ -8,9 +8,10 @@ CXXFLAGS = -std=c++11 -Wall
 INCLUDES = -I.
 
 # Lista de archivos fuente
-SRCS = main.cpp Sistema/Sys.cpp Classes/Asistente.cpp Classes/Event.cpp \
+SRCS = main.cpp Sistema/Sys.cpp Classes/Event.cpp Classes/Asistente.cpp \
 	Classes/Concert.cpp Classes/Conference.cpp Classes/Seminario.cpp \
-	Classes/Taller.cpp
+	Classes/Taller.cpp Classes/Student.cpp Classes/Professional.cpp Classes/SpecialInvit.cpp \
+       	Classes/AsistenteFactory.cpp Classes/EventFactory.cpp
 
 # Lista de objetos a generar
 OBJS = $(SRCS:.cpp=.o)
